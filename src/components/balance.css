@@ -1,0 +1,538 @@
+/* Variables de colores */
+:root {
+  --color-primary: #007bff;
+  --color-primary-hover: #0056b3;
+  --color-success: #28a745;
+  --color-success-hover: #218838;
+  --color-danger: #dc3545;
+  --color-danger-hover: #c82333;
+  --color-secondary: #6c757d;
+  --color-secondary-hover: #5a6268;
+  --color-light: #f8f9fa;
+  --color-border: #dee2e6;
+  --color-text: #212529;
+  --color-text-muted: #6c757d;
+  
+  /* Colores específicos para balance */
+  --color-activo: #d4edda;
+  --color-pasivo: #fff3cd;
+  --color-perdidas: #f8d7da;
+  --color-ganancias: #d1ecf1;
+}
+
+/* Reset y base */
+* {
+  box-sizing: border-box;
+}
+
+/* Contenedor principal */
+.balance-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: var(--color-light);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+/* Header */
+.balance-header {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.balance-title {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+
+/* Controles */
+.balance-controls-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.balance-filters-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.balance-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 200px;
+}
+
+.balance-filter-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.balance-empresa-select,
+.balance-year-input {
+  padding: 10px 12px;
+  border: 2px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.balance-empresa-select:focus,
+.balance-year-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.balance-empresa-select:disabled,
+.balance-year-input:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Fila de acciones */
+.balance-actions-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.balance-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.balance-return-btn {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+.balance-return-btn:hover:not(:disabled) {
+  background-color: var(--color-secondary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.balance-save-btn {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.balance-save-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.balance-excel-btn {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.balance-excel-btn:hover:not(:disabled) {
+  background-color: var(--color-success-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.balance-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.balance-save-success {
+  color: var(--color-success);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 12px;
+  background-color: #d4edda;
+  border-radius: 6px;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Contenido */
+.balance-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Estados de carga */
+.balance-loading,
+.balance-no-data {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 16px;
+}
+
+.balance-error-message {
+  padding: 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 6px;
+  margin: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Contenedor de tabla */
+.balance-table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 300px);
+}
+
+/* Tabla */
+.balance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 1200px;
+}
+
+.balance-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa;
+}
+
+.balance-table th {
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+  background-color: #e9ecef;
+  color: var(--color-text);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.balance-cuenta-header {
+  min-width: 250px;
+  text-align: left !important;
+  padding-left: 15px !important;
+  background-color: #495057 !important;
+  color: white !important;
+}
+
+.balance-category-header {
+  background-color: #6c757d !important;
+  color: white !important;
+}
+
+.balance-debe-header,
+.balance-perdidas-header {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+}
+
+.balance-haber-header,
+.balance-ganancias-header {
+  background-color: #d1ecf1 !important;
+  color: #0c5460 !important;
+}
+
+.balance-activo-header {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+}
+
+.balance-pasivo-header {
+  background-color: #fff3cd !important;
+  color: #856404 !important;
+}
+
+.balance-actions-header {
+  min-width: 180px;
+  background-color: #495057 !important;
+  color: white !important;
+}
+
+/* Filas de datos */
+.balance-table tbody tr {
+  transition: background-color 0.15s;
+}
+
+.balance-data-row:hover {
+  background-color: #f8f9fa;
+}
+
+.balance-data-row:nth-child(odd) {
+  background-color: white;
+}
+
+.balance-data-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.balance-blank-row {
+  height: 20px;
+  background-color: transparent !important;
+}
+
+.balance-blank-row td {
+  border: none !important;
+  padding: 0 !important;
+}
+
+.balance-sumas-row {
+  background-color: #fff3cd !important;
+  font-weight: 700;
+}
+
+.balance-sumas-row td {
+  border-top: 2px solid #000 !important;
+  border-bottom: 1px solid #000 !important;
+}
+
+.balance-utilidad-row {
+  background-color: #d1ecf1 !important;
+  font-weight: 700;
+}
+
+.balance-total-row {
+  background-color: #495057 !important;
+  color: white !important;
+  font-weight: 700;
+}
+
+.balance-total-row td {
+  border-top: 3px double #000 !important;
+  border-bottom: 3px double #000 !important;
+}
+
+/* Celdas */
+.balance-table td {
+  padding: 10px 8px;
+  border: 1px solid var(--color-border);
+  text-align: right;
+}
+
+.balance-tipo-cell {
+  text-align: left !important;
+  padding-left: 15px !important;
+  font-weight: 500;
+  min-width: 250px;
+}
+
+.balance-monto-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.balance-activo-cell {
+  background-color: var(--color-activo);
+}
+
+.balance-pasivo-cell {
+  background-color: var(--color-pasivo);
+}
+
+.balance-perdidas-cell {
+  background-color: var(--color-perdidas);
+}
+
+.balance-ganancias-cell {
+  background-color: var(--color-ganancias);
+}
+
+/* Acciones */
+.balance-actions-cell {
+  text-align: center !important;
+  padding: 5px !important;
+}
+
+.balance-button-group {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.balance-category-btn {
+  padding: 6px 10px;
+  border: 2px solid;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+  letter-spacing: 0.5px;
+}
+
+.balance-category-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.balance-category-btn.active {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.balance-activo-btn {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.balance-activo-btn.active {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.balance-pasivo-btn {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.balance-pasivo-btn.active {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+.balance-perdidas-btn {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.balance-perdidas-btn.active {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.balance-ganancias-btn {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.balance-ganancias-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Responsive */
+@media screen and (max-width: 1200px) {
+  .balance-container {
+    padding: 15px;
+  }
+  
+  .balance-title {
+    font-size: 24px;
+  }
+  
+  .balance-filters-row {
+    flex-direction: column;
+  }
+  
+  .balance-filter-group {
+    width: 100%;
+  }
+  
+  .balance-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .balance-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .balance-table {
+    font-size: 11px;
+  }
+  
+  .balance-table th,
+  .balance-table td {
+    padding: 6px 4px;
+  }
+  
+  .balance-monto-cell {
+    min-width: 90px;
+    font-size: 11px;
+  }
+  
+  .balance-category-btn {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+}
+
+/* Scrollbar personalizado */
+.balance-table-container::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+
+.balance-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.balance-table-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+.balance-table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Impresión */
+@media print {
+  .balance-header {
+    box-shadow: none;
+  }
+  
+  .balance-controls-wrapper {
+    display: none;
+  }
+  
+  .balance-table-container {
+    max-height: none;
+    overflow: visible;
+  }
+  
+  .balance-actions-cell {
+    display: none;
+  }
+  
+  .balance-table {
+    font-size: 10px;
+  }
+}

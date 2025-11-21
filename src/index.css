@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos adicionales personalizados si los necesitas */
+.app-container {
+  @apply min-h-screen bg-gray-100 p-8;
+}
+
+.content-wrapper {
+  @apply max-w-4xl mx-auto;
+}
