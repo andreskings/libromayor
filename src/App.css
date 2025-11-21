@@ -97,7 +97,7 @@ button:hover {
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s, box-shadow 0.3s;
@@ -181,7 +181,7 @@ input:focus {
   background-color: #ff3300;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s;

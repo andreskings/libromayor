@@ -381,7 +381,7 @@ function Historial({ onBack }) {
     <div className="historial-container">
       <div className="header-container">
         <button onClick={onBack} className="back-button">
-          Volver al Formulario
+          Volver
         </button>
 
         <h1 className="title">Historial de Registros</h1>
